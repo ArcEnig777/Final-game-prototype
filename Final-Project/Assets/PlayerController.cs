@@ -4,7 +4,10 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float mSpeed = 5f;
+    public OverlayTile standingOnTile;
+}
+
+/*public float mSpeed = 5f;
     public Transform movePoint;
     public LayerMask noMoveMask;
     // Start is called before the first frame update
@@ -36,5 +39,5 @@ public class PlayerController : MonoBehaviour
             }
         }
 
-    }
-}
+    }*/
+
