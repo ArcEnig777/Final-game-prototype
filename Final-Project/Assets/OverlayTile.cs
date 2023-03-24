@@ -10,6 +10,7 @@ public class OverlayTile : MonoBehaviour
         public int F { get { return G + H; } }
 
         public bool isBlocked = false;
+        public bool isPlayerBlocked = false;
 
         public OverlayTile Previous;
         public Vector3Int gridLocation;
@@ -38,6 +39,10 @@ public class OverlayTile : MonoBehaviour
         public void ShowTile()
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0.75f, 0.5f);
+        }
+        public void ShowTileEnemy()
+        {
+            gameObject.GetComponent<SpriteRenderer>().color = new Color(0.75f, 0, 0, 0.5f);
         }
 
         public void SetSprite(ArrowDirection d)

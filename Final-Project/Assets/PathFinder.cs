@@ -43,7 +43,7 @@ public class PathFinder
 
                 foreach (var tile in GetNeightbourOverlayTiles(currentOverlayTile))
                 {
-                    if (tile.isBlocked || closedList.Contains(tile) || Mathf.Abs(currentOverlayTile.transform.position.z - tile.transform.position.z) > 1)
+                    if (tile.isBlocked || closedList.Contains(tile) || tile.isPlayerBlocked ||Mathf.Abs(currentOverlayTile.transform.position.z - tile.transform.position.z) > 1)
                     {
                         continue;
                     }

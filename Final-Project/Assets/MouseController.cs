@@ -122,6 +122,10 @@ public class MouseController : MonoBehaviour
                             }
                             tile.gameObject.GetComponent<OverlayTile>().HideTile();
                         }
+                        else
+                        {
+                            character = null;
+                        }
                     }
 
                 }
@@ -226,8 +230,8 @@ public class MouseController : MonoBehaviour
             rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.standingOnTile.gridLocation.x, character.standingOnTile.gridLocation.y), 3);
 
             foreach (var item in rangeFinderTiles)
-            {
-                item.ShowTile();
+            {   
+                    item.ShowTile();   
             }
         }
 
