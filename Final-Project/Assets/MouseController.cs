@@ -12,13 +12,16 @@ public class MouseController : MonoBehaviour
         public float speed;
         public GameObject characterPrefab;
         public PlayerController character;
+        public EnemyController target;
 
         private PathFinder pathFinder;
         private RangeFinder rangeFinder;
         private ArrowTranslator arrowTranslator;
         public List<OverlayTile> path;
         public List<OverlayTile> rangeFinderTiles;
+        public List<OverlayTile> attackRangeFinderTiles;
         public bool isMoving;
+        public bool isAttacking;
 
         private void Start()
         {
@@ -28,7 +31,9 @@ public class MouseController : MonoBehaviour
 
             path = new List<OverlayTile>();
             isMoving = false;
+            isAttacking = false;
             rangeFinderTiles = new List<OverlayTile>();
+            attackRangeFinderTiles = new List<OverlayTile>();
         }
 
         void LateUpdate()
@@ -48,7 +53,7 @@ public class MouseController : MonoBehaviour
                 cursor.transform.position = tile.transform.position;
                 cursor.gameObject.GetComponent<SpriteRenderer>().sortingOrder = tile.transform.GetComponent<SpriteRenderer>().sortingOrder;
 
-                if (rangeFinderTiles.Contains(tile) && !isMoving && character != null)
+                if (rangeFinderTiles.Contains(tile) && !isMoving && !isAttacking && character != null)
                 {
                     path = pathFinder.FindPath(character.standingOnTile, tile, rangeFinderTiles);
 
@@ -67,7 +72,7 @@ public class MouseController : MonoBehaviour
                     }
                 }
 
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) && !isAttacking)
                 {
                     tile.gameObject.GetComponent<SpriteRenderer>().color = new Color(0, 0, 0.75f, 0.5f);
 
@@ -78,15 +83,36 @@ public class MouseController : MonoBehaviour
 
                         Debug.Log(unit.Value);
 
-                        character = unit.Value.collider.gameObject.GetComponent<PlayerController>();
+                        if (character != null)
+                        {
+                            if(unit.Value.collider.gameObject.GetComponent<PlayerController>().standingOnTile == character.standingOnTile)
+                            {
+                                GetInRangeAtkTiles();
+                                isAttacking = true;
+                            }
+                            else
+                            {
+                                character = unit.Value.collider.gameObject.GetComponent<PlayerController>();
+                                RaycastHit2D? player = GetFocusedOnPlayer(character);
+                                OverlayTile ptile = player.Value.collider.gameObject.GetComponent<OverlayTile>();
+                                PositionCharacterOnLine(ptile);
+                                character.standingOnTile = ptile;
+                                GetInRangeTiles();
+                            }
+                        }
+                        else
+                        {
+                            character = unit.Value.collider.gameObject.GetComponent<PlayerController>();
 
-                        Debug.Log(character);
+                            Debug.Log(character);
 
-                        RaycastHit2D? player = GetFocusedOnPlayer(character);
-                        OverlayTile ptile = player.Value.collider.gameObject.GetComponent<OverlayTile>();
-                        PositionCharacterOnLine(ptile);
-                        character.standingOnTile = ptile;
-                        GetInRangeTiles();
+                            RaycastHit2D? player = GetFocusedOnPlayer(character);
+                            OverlayTile ptile = player.Value.collider.gameObject.GetComponent<OverlayTile>();
+                            PositionCharacterOnLine(ptile);
+                            character.standingOnTile = ptile;
+                            GetInRangeTiles();
+                        }
+
                     }
 
                     /*if (character == null)
@@ -131,12 +157,46 @@ public class MouseController : MonoBehaviour
                 }
                 else if (Input.GetMouseButtonDown(1))
                 {
+
                     foreach (var item in rangeFinderTiles)
                     {
                         MapManager.Instance.map[item.grid2DLocation].SetSprite(ArrowDirection.None);
                     }
                     character = null;
+                    isAttacking = false;
 
+                }
+                else if (Input.GetMouseButtonDown(0) && isAttacking)
+                {
+                    RaycastHit2D? ehit = GetFocusedOnTile();
+
+                    if (ehit.HasValue)
+                    {
+                        OverlayTile etile = hit.Value.collider.gameObject.GetComponent<OverlayTile>();
+
+                        if(attackRangeFinderTiles.Contains(etile) && tile.isPlayerBlocked)
+                        {
+                            Debug.Log("I found an enemy!");
+                            RaycastHit2D? enemy = GetFocusedOnEnemy();
+
+                            if (enemy.HasValue)
+                            {
+                                target = enemy.Value.collider.gameObject.GetComponent<EnemyController>();
+
+                                target.takeDamage(character.getAttack() - target.getDefense());
+                                
+                                if (target != null)
+                                {
+                                    character.takeDamage(target.getAttack() - character.getDefense());
+                                }
+                                
+                            }
+                        }
+                    }
+
+                    isAttacking = false;
+                    character = null;
+                    target = null;
                 }
             }
 
@@ -163,7 +223,8 @@ public class MouseController : MonoBehaviour
             if(path.Count <= 0)
             {
                 isMoving = false;
-                character = null;
+                isAttacking = true;
+                GetInRangeAtkTiles();
             }
 
         }
@@ -210,6 +271,24 @@ public class MouseController : MonoBehaviour
             return null;
         }
 
+        private static RaycastHit2D? GetFocusedOnEnemy()
+        {
+            Vector3 mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            Vector2 mousePos2D = new Vector2(mousePos.x, mousePos.y);
+
+            LayerMask layer = LayerMask.GetMask("Enemy");
+
+            RaycastHit2D[] pUnit = Physics2D.RaycastAll(mousePos2D, Vector2.zero, 20.0f, layer);
+
+            if (pUnit.Length > 0)
+            {
+                Debug.Log("I found something interesting");
+                return pUnit.OrderByDescending(i => i.collider.transform.position.z).First();
+            }
+
+            return null;
+        }
+
         private static RaycastHit2D? GetFocusedOnPlayer(PlayerController c)
         {
             Vector2 char2D = new Vector2(c.transform.position.x, c.transform.position.y);
@@ -232,6 +311,15 @@ public class MouseController : MonoBehaviour
             foreach (var item in rangeFinderTiles)
             {   
                     item.ShowTile();   
+            }
+        }
+        private void GetInRangeAtkTiles()
+        {
+            attackRangeFinderTiles = rangeFinder.GetTilesInAtkRange(new Vector2Int(character.standingOnTile.gridLocation.x, character.standingOnTile.gridLocation.y), 1);
+
+            foreach (var item in attackRangeFinderTiles)
+            {   
+                    item.ShowTileEnemy();   
             }
         }
 

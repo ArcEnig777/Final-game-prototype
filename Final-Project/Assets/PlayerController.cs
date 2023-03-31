@@ -5,6 +5,37 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public OverlayTile standingOnTile;
+    public int HP;
+    public int ATK;
+    public int DEF;
+    public bool available; 
+
+    void Start()
+    {
+        HP = 15;
+        ATK = 5;
+        DEF = 1;
+    }
+
+    public void takeDamage(int damage)
+    {
+        HP = HP - damage;
+
+        if (HP <= 0)
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    public int getAttack()
+    {
+        return ATK;
+    }
+
+    public int getDefense()
+    {
+        return DEF;
+    }
 }
 
 /*public float mSpeed = 5f;

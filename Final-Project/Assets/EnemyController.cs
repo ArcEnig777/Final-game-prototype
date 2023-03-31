@@ -7,10 +7,16 @@ using System;
 public class EnemyController : MonoBehaviour
 {
     public OverlayTile standingOnTile;
+    public int HP;
+    public int ATK;
+    public int DEF;
+    public bool available;
     // Start is called before the first frame update
     void Start()
     {
-
+        HP = 10;
+        ATK = 3;
+        DEF = 1;
     }
 
     void Update()
@@ -44,6 +50,27 @@ public class EnemyController : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void takeDamage(int damage)
+    {
+        HP = HP - damage;
+
+        if (HP <= 0)
+        {
+            standingOnTile.isPlayerBlocked = false;
+            Destroy(gameObject);
+        }
+    }
+
+    public int getAttack()
+    {
+        return ATK;
+    }
+
+    public int getDefense()
+    {
+        return DEF;
     }
 
 }
