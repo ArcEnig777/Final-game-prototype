@@ -147,44 +147,28 @@ public class MapManager : MonoBehaviour
             Vector2Int TileToCheck = new Vector2Int(originTile.x + 1, originTile.y);
             if (map.ContainsKey(TileToCheck))
             {
-                if(map[TileToCheck].isPlayerBlocked)
-                {
-                    map[TileToCheck].ShowTileEnemy();
-                }
-                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
+                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 )
                     surroundingTiles.Add(map[TileToCheck]);
             }
 
             TileToCheck = new Vector2Int(originTile.x - 1, originTile.y);
             if (map.ContainsKey(TileToCheck))
             {
-                if(map[TileToCheck].isPlayerBlocked)
-                {
-                    map[TileToCheck].ShowTileEnemy();
-                }
-                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
+                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 )
                     surroundingTiles.Add(map[TileToCheck]);
             }
 
             TileToCheck = new Vector2Int(originTile.x, originTile.y + 1);
             if (map.ContainsKey(TileToCheck))
             {
-                if(map[TileToCheck].isPlayerBlocked)
-                {
-                    map[TileToCheck].ShowTileEnemy();
-                }
-                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
+                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 )
                     surroundingTiles.Add(map[TileToCheck]);
             }
 
             TileToCheck = new Vector2Int(originTile.x, originTile.y - 1);
             if (map.ContainsKey(TileToCheck))
             {
-                if(map[TileToCheck].isPlayerBlocked)
-                {
-                    map[TileToCheck].ShowTileEnemy();
-                }
-                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 && !map[TileToCheck].isBlocked)
+                if (Mathf.Abs(map[TileToCheck].transform.position.z - map[originTile].transform.position.z) <= 1 )
                     surroundingTiles.Add(map[TileToCheck]);
             }
 

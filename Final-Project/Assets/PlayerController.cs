@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using System;
 
 public class PlayerController : MonoBehaviour
 {
@@ -8,22 +9,77 @@ public class PlayerController : MonoBehaviour
     public int HP;
     public int ATK;
     public int DEF;
-    public bool available; 
+    public int atkRange;
+    public int MOV;
+    public int deathPred;
+    public bool available;
+    public SpriteRenderer sprite; 
+    public static event Action onAnyAttack;
+    public static event Action onDeath;
+    public GameManager gameManager;
+    public string type;
 
     void Start()
     {
-        HP = 15;
-        ATK = 5;
-        DEF = 1;
+        HP = 15 + (GameManager.Instance.Level * 5);
+        ATK = 5 + (GameManager.Instance.Level * 2);
+        DEF = 1 + (GameManager.Instance.Level * 2);
+        MOV = 3;
+        atkRange = 1;
+        sprite = GetComponent<SpriteRenderer>();
+        gameManager = GameManager.Instance;
+        gameManager.playerUnits += 1;
+
+        if(type == "Tank")
+        {
+            HP += 5;
+            DEF += 2;
+        }
+
+        if(type == "Flier")
+        {
+            MOV += 2;
+            ATK +=3;
+            DEF -= 1;
+        }
+
+        if(type == "Archer")
+        {
+            HP -= 3;
+            MOV -= 1;
+            ATK +=2;
+            DEF -= 1;
+            atkRange += 1;
+        }
+
+        if(type == "Soldier")
+        {
+            HP +=2;
+            ATK +=1;
+            DEF += 1;
+        }
+
+        if(type == "Lord")
+        {
+            HP +=10;
+            ATK +=2;
+            DEF += 2;
+            atkRange +=1;
+        }
     }
 
     public void takeDamage(int damage)
     {
         HP = HP - damage;
 
+
         if (HP <= 0)
         {
-            Destroy(gameObject);
+            StartCoroutine("Death");
+        }
+        else
+        {
+           StartCoroutine("Blink"); 
         }
     }
 
@@ -36,39 +92,35 @@ public class PlayerController : MonoBehaviour
     {
         return DEF;
     }
+
+    private IEnumerator Blink() {
+ 
+         Color defaultColor = sprite.color;
+ 
+         sprite.color = new Color(1, 1, 1,0);
+
+         onAnyAttack.Invoke();
+ 
+         yield return new WaitForSeconds(0.5f);
+ 
+         sprite.color = defaultColor ;
+     }
+    private IEnumerator Death() {
+ 
+         Color defaultColor = sprite.color;
+ 
+         sprite.color = new Color(1, 1, 1,0);
+
+         onDeath.Invoke();
+ 
+         yield return new WaitForSeconds(0.4f);
+        
+         gameManager.playerUnits -= 1;
+         Destroy(gameObject);
+ 
+         
+     }
 }
 
-/*public float mSpeed = 5f;
-    public Transform movePoint;
-    public LayerMask noMoveMask;
-    // Start is called before the first frame update
-    void Start()
-    {
-        movePoint.parent = null;
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        transform.position = Vector3.MoveTowards(transform.position,movePoint.position, mSpeed*Time.deltaTime);
-
-        if(Vector3.Distance(transform.position, movePoint.position) <= .05f)
-        {
-            if(Mathf.Abs(Input.GetAxisRaw("Horizontal")) == 1f)
-            {
-                if(!Physics2D.OverlapCircle(movePoint.position + new Vector3(Input.GetAxisRaw("Horizontal"), 0f,0f), .2f, noMoveMask))
-                {
-                    movePoint.position += new Vector3(Input.GetAxisRaw("Horizontal"), 0f,0f);
-                }
-            }
-            else if(Mathf.Abs(Input.GetAxisRaw("Vertical")) == 1f)
-            {
-                if(!Physics2D.OverlapCircle(movePoint.position + new Vector3(0f, Input.GetAxisRaw("Vertical"),0f), .2f, noMoveMask))
-                {
-                    movePoint.position += new Vector3(0f, Input.GetAxisRaw("Vertical"),0f);
-                }
-            }
-        }
-
-    }*/
 

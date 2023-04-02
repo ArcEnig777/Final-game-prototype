@@ -20,8 +20,10 @@ public class MouseController : MonoBehaviour
         public List<OverlayTile> path;
         public List<OverlayTile> rangeFinderTiles;
         public List<OverlayTile> attackRangeFinderTiles;
+        public List<OverlayTile> enemyAttackRangeFinderTiles;
         public bool isMoving;
         public bool isAttacking;
+        public SpriteRenderer characterSprite;
 
         private void Start()
         {
@@ -34,6 +36,7 @@ public class MouseController : MonoBehaviour
             isAttacking = false;
             rangeFinderTiles = new List<OverlayTile>();
             attackRangeFinderTiles = new List<OverlayTile>();
+            enemyAttackRangeFinderTiles = new List<OverlayTile>();
         }
 
         void LateUpdate()
@@ -93,6 +96,7 @@ public class MouseController : MonoBehaviour
                             else
                             {
                                 character = unit.Value.collider.gameObject.GetComponent<PlayerController>();
+                                characterSprite = unit.Value.collider.gameObject.GetComponent<SpriteRenderer>();
                                 RaycastHit2D? player = GetFocusedOnPlayer(character);
                                 OverlayTile ptile = player.Value.collider.gameObject.GetComponent<OverlayTile>();
                                 PositionCharacterOnLine(ptile);
@@ -103,6 +107,7 @@ public class MouseController : MonoBehaviour
                         else
                         {
                             character = unit.Value.collider.gameObject.GetComponent<PlayerController>();
+                            characterSprite = unit.Value.collider.gameObject.GetComponent<SpriteRenderer>();
 
                             Debug.Log(character);
 
@@ -151,6 +156,7 @@ public class MouseController : MonoBehaviour
                         else
                         {
                             character = null;
+                            characterSprite = null;
                         }
                     }
 
@@ -163,6 +169,7 @@ public class MouseController : MonoBehaviour
                         MapManager.Instance.map[item.grid2DLocation].SetSprite(ArrowDirection.None);
                     }
                     character = null;
+                    characterSprite = null;
                     isAttacking = false;
 
                 }
@@ -182,21 +189,21 @@ public class MouseController : MonoBehaviour
                             if (enemy.HasValue)
                             {
                                 target = enemy.Value.collider.gameObject.GetComponent<EnemyController>();
+                                enemyGetInRangeAtkTiles();
 
-                                target.takeDamage(character.getAttack() - target.getDefense());
-                                
-                                if (target != null)
-                                {
-                                    character.takeDamage(target.getAttack() - character.getDefense());
-                                }
+                                StartCoroutine(AttackEnemy());
                                 
                             }
+
+                        }
+                        else
+                        {
+                            isAttacking = false;
+                            character = null;
+                            characterSprite = null;
+                            target = null;
                         }
                     }
-
-                    isAttacking = false;
-                    character = null;
-                    target = null;
                 }
             }
 
@@ -306,7 +313,7 @@ public class MouseController : MonoBehaviour
         }
         private void GetInRangeTiles()
         {
-            rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.standingOnTile.gridLocation.x, character.standingOnTile.gridLocation.y), 3);
+            rangeFinderTiles = rangeFinder.GetTilesInRange(new Vector2Int(character.standingOnTile.gridLocation.x, character.standingOnTile.gridLocation.y), character.MOV);
 
             foreach (var item in rangeFinderTiles)
             {   
@@ -315,12 +322,63 @@ public class MouseController : MonoBehaviour
         }
         private void GetInRangeAtkTiles()
         {
-            attackRangeFinderTiles = rangeFinder.GetTilesInAtkRange(new Vector2Int(character.standingOnTile.gridLocation.x, character.standingOnTile.gridLocation.y), 1);
+            attackRangeFinderTiles = rangeFinder.GetTilesInAtkRange(new Vector2Int(character.standingOnTile.gridLocation.x, character.standingOnTile.gridLocation.y), character.atkRange);
 
             foreach (var item in attackRangeFinderTiles)
             {   
                     item.ShowTileEnemy();   
             }
+        }
+        private void enemyGetInRangeAtkTiles()
+        {
+            enemyAttackRangeFinderTiles = rangeFinder.GetTilesInAtkRange(new Vector2Int(target.standingOnTile.gridLocation.x, target.standingOnTile.gridLocation.y), target.atkRange);
+        }
+        private IEnumerator AttackEnemy() {
+
+            target.takeDamage(character.getAttack() - target.getDefense());
+            
+            Debug.Log(target);
+
+            yield return new WaitForSeconds(0.5f);
+
+            Debug.Log(target);
+
+            if (target != null && enemyAttackRangeFinderTiles.Contains(character.standingOnTile))
+            {
+                character.takeDamage(target.getAttack() - character.getDefense());
+
+                if(character == null && GameManager.Instance.playerUnits == 0)
+                {
+                    isAttacking = false;
+                    character = null;
+                    characterSprite = null;
+                    target = null;
+                    GameManager.Instance.returnMenu();
+                }
+            }
+            else if (target == null && GameManager.Instance.enemyUnits == 0)
+            {
+                isAttacking = false;
+                character = null;
+                characterSprite = null;
+                target = null;
+
+                GameManager.Instance.changeLevel();
+
+            }
+
+            isAttacking = false;
+            character = null;
+            characterSprite = null;
+            target = null;
+
+        }
+        private IEnumerator AttackCharacter() {
+
+            character.takeDamage(target.getAttack() - character.getDefense());
+
+            yield return new WaitForSeconds(0.5f);
+
         }
 
    

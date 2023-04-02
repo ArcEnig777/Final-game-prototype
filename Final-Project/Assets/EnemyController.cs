@@ -10,13 +10,64 @@ public class EnemyController : MonoBehaviour
     public int HP;
     public int ATK;
     public int DEF;
+    public int atkRange;
+    public int MOV;
     public bool available;
+    public SpriteRenderer sprite; 
+    public static event Action onAnyAttack;
+    public static event Action onDeath;
+    public GameManager gameManager;
+    public string type;
+    
     // Start is called before the first frame update
     void Start()
     {
-        HP = 10;
-        ATK = 3;
-        DEF = 1;
+        HP = 10 + (GameManager.Instance.Level * 5);
+        ATK = 3 + (GameManager.Instance.Level * 2);
+        DEF = 1 + (GameManager.Instance.Level * 2);
+        MOV = 3;
+        atkRange = 1;
+        sprite = GetComponent<SpriteRenderer>();
+        gameManager = GameManager.Instance;
+        gameManager.enemyUnits += 1;
+
+        if(type == "Tank")
+        {
+            HP += 5;
+            DEF += 2;
+            gameManager.enemyUnits -= 1;
+        }
+
+        if(type == "Flier")
+        {
+            MOV += 2;
+            ATK +=3;
+            DEF -= 1;
+        }
+
+        if(type == "Archer")
+        {
+            HP -= 3;
+            MOV -= 1;
+            ATK +=2;
+            DEF -= 1;
+            atkRange += 1;
+        }
+
+        if(type == "Soldier")
+        {
+            HP +=2;
+            ATK +=1;
+            DEF += 1;
+        }
+
+        if(type == "Commander")
+        {
+            HP +=10;
+            ATK +=2;
+            DEF += 2;
+            atkRange +=1;
+        }
     }
 
     void Update()
@@ -54,12 +105,17 @@ public class EnemyController : MonoBehaviour
 
     public void takeDamage(int damage)
     {
+        
         HP = HP - damage;
+
 
         if (HP <= 0)
         {
-            standingOnTile.isPlayerBlocked = false;
-            Destroy(gameObject);
+            StartCoroutine("Death");
+        }
+        else
+        {
+           StartCoroutine("Blink"); 
         }
     }
 
@@ -72,5 +128,39 @@ public class EnemyController : MonoBehaviour
     {
         return DEF;
     }
+
+    private IEnumerator Blink() {
+ 
+         Color defaultColor = sprite.color;
+ 
+         sprite.color = new Color(1, 1, 1,0);
+
+         onAnyAttack.Invoke();
+ 
+         yield return new WaitForSeconds(0.5f);
+ 
+         sprite.color = defaultColor ;
+     }
+
+    private IEnumerator Death() {
+ 
+         Color defaultColor = sprite.color;
+ 
+         sprite.color = new Color(1, 1, 1,0);
+
+         onDeath.Invoke();
+ 
+         yield return new WaitForSeconds(0.4f);
+
+         standingOnTile.isPlayerBlocked = false;
+         if(type != "Tank")
+         {
+            gameManager.enemyUnits -= 1;
+         }
+         
+         Destroy(gameObject);
+ 
+         
+     }
 
 }
