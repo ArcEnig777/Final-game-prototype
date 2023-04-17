@@ -16,6 +16,8 @@ public class MapManager : MonoBehaviour
         public Dictionary<Vector2Int, OverlayTile> map;
         public bool ignoreBottomTiles;
 
+        public GameManager gameManager;
+
         private void Awake()
         {
             if (_instance != null && _instance != this)
@@ -25,6 +27,10 @@ public class MapManager : MonoBehaviour
             {
                 _instance = this;
             }
+
+            gameManager = GameManager.Instance;
+            gameManager.playerPhase = true;
+            gameManager.phaseText.text = "Player Phase";
         }
 
         private static RaycastHit2D? GetFocusedOnTile()

@@ -11,6 +11,7 @@ public class OverlayTile : MonoBehaviour
 
         public bool isBlocked = false;
         public bool isPlayerBlocked = false;
+        public bool isPlayer = false;
 
         public OverlayTile Previous;
         public Vector3Int gridLocation;

@@ -6,6 +6,7 @@ using System;
 public class PlayerController : MonoBehaviour
 {
     public OverlayTile standingOnTile;
+    public OverlayTile prevTile;
     public int HP;
     public int ATK;
     public int DEF;
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
     public static event Action onDeath;
     public GameManager gameManager;
     public string type;
+    public bool turnEnd;
+    public Color defColor;
 
     void Start()
     {
@@ -27,8 +30,12 @@ public class PlayerController : MonoBehaviour
         MOV = 3;
         atkRange = 1;
         sprite = GetComponent<SpriteRenderer>();
+        defColor = sprite.color;
         gameManager = GameManager.Instance;
         gameManager.playerUnits += 1;
+        gameManager.playerTurns += 1;
+        gameManager.allies.Add(GetComponent<PlayerController>());
+        turnEnd = false;
 
         if(type == "Tank")
         {
@@ -93,6 +100,11 @@ public class PlayerController : MonoBehaviour
         return DEF;
     }
 
+    public int getHP()
+    {
+        return HP;
+    }
+
     private IEnumerator Blink() {
  
          Color defaultColor = sprite.color;
@@ -102,8 +114,15 @@ public class PlayerController : MonoBehaviour
          onAnyAttack.Invoke();
  
          yield return new WaitForSeconds(0.5f);
- 
-         sprite.color = defaultColor ;
+
+         if(turnEnd && !gameManager.playerPhase)
+         {
+            sprite.color = defaultColor ;
+         }
+         else
+          {  
+            sprite.color = new Color(0.2f,0.2f,0.2f,1.0f);
+          }
      }
     private IEnumerator Death() {
  
@@ -116,9 +135,16 @@ public class PlayerController : MonoBehaviour
          yield return new WaitForSeconds(0.4f);
         
          gameManager.playerUnits -= 1;
+         gameManager.allies.Remove(GetComponent<PlayerController>());
+         standingOnTile.isPlayer = false;
          Destroy(gameObject);
  
          
+     }
+
+     public void colorChange(Color c)
+     {
+        sprite.color = c;
      }
 }
 
