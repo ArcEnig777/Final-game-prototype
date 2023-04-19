@@ -177,10 +177,10 @@ public class EnemyController : MonoBehaviour
             gameManager.enemies.Remove(GetComponent<EnemyController>());
             standingOnTile.isPlayerBlocked = false;
             Destroy(gameObject);
-         }
-         if(GameManager.Instance.enemyUnits == 0)
-         {
-            GameManager.Instance.changeLevel();
+            if(GameManager.Instance.enemyUnits == 0)
+            {
+                GameManager.Instance.changeLevel();
+            }
          }
 
  
@@ -239,7 +239,7 @@ public class EnemyController : MonoBehaviour
      
      public IEnumerator hitTarget() 
      {
-        yield return new WaitForSeconds(0.4f);
+        //yield return new WaitForSeconds(0.4f);
         enemyGetInRangeAtkTiles();
         Debug.Log(atkRange);
         foreach (var item in enemyAttackRangeFinderTiles)
@@ -248,7 +248,7 @@ public class EnemyController : MonoBehaviour
 
             if(item.isPlayer)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.5f);
                 foreach (PlayerController ally in gameManager.allies)
                 {
                     if(ally.standingOnTile == item)
@@ -302,6 +302,8 @@ public class EnemyController : MonoBehaviour
             {
                 GameManager.Instance.returnMenu();
             }
+
+            yield return new WaitForSeconds(0.4f);
         }
 
         isAttacking = false;
