@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 127596703106058938}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 6.4999995, y: 2.5, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6342755, y: 0.62171566, z: 0.62799555}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -75,7 +75,7 @@ SpriteRenderer:
   m_SortingLayerID: -19626185
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: -1382230252, guid: 30fdd40540503ad468a187fb737f3237, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 9c5f61dde0316904bb1f8e85712db0d3, type: 3}
   m_Color: {r: 1, g: 0, b: 0, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -126,6 +126,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   standingOnTile: {fileID: 0}
   HP: 0
+  maxHP: 0
   ATK: 0
   DEF: 0
   atkRange: 0
@@ -133,4 +134,10 @@ MonoBehaviour:
   available: 0
   sprite: {fileID: 0}
   gameManager: {fileID: 0}
+  diff: {fileID: 0}
   type: Commander
+  enemyAttackRangeFinderTiles: []
+  targetAttackRangeFinderTiles: []
+  target: {fileID: 0}
+  isAttacking: 0
+  turn: 0

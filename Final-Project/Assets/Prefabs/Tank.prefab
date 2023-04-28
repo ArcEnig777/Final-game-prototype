@@ -28,7 +28,7 @@ Transform:
   m_GameObject: {fileID: 8156423334699678343}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.49900055, y: -0.5, z: 0.40443444}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.6342755, y: 0.6217157, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -47,7 +47,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   standingOnTile: {fileID: 0}
+  prevTile: {fileID: 0}
   HP: 0
+  maxHP: 0
   ATK: 0
   DEF: 0
   atkRange: 0
@@ -57,6 +59,8 @@ MonoBehaviour:
   sprite: {fileID: 0}
   gameManager: {fileID: 0}
   type: Tank
+  turnEnd: 0
+  defColor: {r: 0, g: 0, b: 0, a: 0}
 --- !u!212 &8156423334699678342
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -98,7 +102,7 @@ SpriteRenderer:
   m_SortingLayerID: -19626185
   m_SortingLayer: 1
   m_SortingOrder: 0
-  m_Sprite: {fileID: 1792490210, guid: 30fdd40540503ad468a187fb737f3237, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 258acce95b9281a40a24df1ecc356080, type: 3}
   m_Color: {r: 0, g: 0.33834887, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
