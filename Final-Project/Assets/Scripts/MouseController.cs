@@ -187,13 +187,29 @@ public class MouseController : MonoBehaviour
                             } 
                             else if (path.Count > 0)
                             {
-                                character.prevTile = character.standingOnTile;
-                                isMoving = true;
-                                foreach (var item in rangeFinderTiles)
+                                RaycastHit2D? mvhit = GetFocusedOnTile();
+
+                                if(mvhit.HasValue)
                                 {
-                                    MapManager.Instance.map[item.grid2DLocation].SetSprite(ArrowDirection.None);
+                                    OverlayTile mvtile = mvhit.Value.collider.gameObject.GetComponent<OverlayTile>();
+
+                                    if(path.Contains(mvtile))
+                                    {
+                                        character.prevTile = character.standingOnTile;
+                                        isMoving = true;
+                                        foreach (var item in rangeFinderTiles)
+                                        {
+                                            MapManager.Instance.map[item.grid2DLocation].SetSprite(ArrowDirection.None);
+                                        }
+                                        tile.gameObject.GetComponent<OverlayTile>().HideTile();
+                                    }
+                                    else
+                                    {
+                                        GetInRangeTiles();
+                                    }
                                 }
-                                tile.gameObject.GetComponent<OverlayTile>().HideTile();
+
+      
                             }
                             else
                             {
