@@ -10,3 +10,5 @@ Fight your way through the Dragon King's army and save the world!
 -Make use of your enviroment to gain the advantage. All maps feature on or more types of interactible objects each with its own benefits.
 
 -Aim to beat your score amongst the 3 difficulties. At the end of the 3 maps you will be graded based on the amount of damage you took, enemies defeated, difficulty, etc.
+
+![alt text](https://github.com/ArcEnig777/Final-game-prototype/blob/main/rpg1.jpg?raw=true)
