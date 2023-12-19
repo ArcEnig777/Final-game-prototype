@@ -11,6 +11,8 @@ Fight your way through the Dragon King's army and save the world!
 
 -Aim to beat your score amongst the 3 difficulties. At the end of the 3 maps you will be graded based on the amount of damage you took, enemies defeated, difficulty, etc.
 
+CONTROLS: Right click deselects, left click selects
+
 ![alt text](https://github.com/ArcEnig777/Final-game-prototype/blob/main/Images/rpg1.JPG?raw=true)
 
 ![alt text](https://github.com/ArcEnig777/Final-game-prototype/blob/main/Images/rpg2.JPG?raw=true)
