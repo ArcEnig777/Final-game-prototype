@@ -1,4 +1,4 @@
-# Final-game-prototype
+# Wars of Arcadia Prototype
 
 Wars of Arcadia is an strategy game in which you control multiple units across 3 maps to defeat the evil Dragon King, each with its own strengths and weaknesses.
 Fight your way through the Dragon King's army and save the world!
