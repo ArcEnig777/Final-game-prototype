@@ -13,6 +13,14 @@ Fight your way through the Dragon King's army and save the world!
 
 CONTROLS: Right click deselects, left click selects
 
+# How to play
+
+1. Download the FInal Submission Folder
+2. Inside, find and run the Final Submission exe
+3. Play!
+
+# Images
+
 ![alt text](https://github.com/ArcEnig777/Final-game-prototype/blob/main/Images/rpg1.JPG?raw=true)
 
 ![alt text](https://github.com/ArcEnig777/Final-game-prototype/blob/main/Images/rpg2.JPG?raw=true)
